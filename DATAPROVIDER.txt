@@ -1,0 +1,89 @@
+DATAPROVIDER 
+
+
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+
+public class ExcellData {
+
+    @Test(dataProvider = "excelData")
+    public void processExcelData(String value) {
+        System.out.println(value);
+    }
+
+    @DataProvider(name = "excelData")
+    public Object[][] provideExcelData() throws IOException {
+        String path = "./excelldatafiles/Book1.xlsx";
+        FileInputStream inputStream = new FileInputStream(path);
+        XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
+        XSSFSheet sheet = workbook.getSheet("Sheet1");
+
+        int rows = sheet.getLastRowNum();
+        int cols = sheet.getRow(1).getLastCellNum();
+
+        Object[][] data = new Object[rows][cols];
+        for (int r = 1; r <= rows; r++) {
+            XSSFRow row = sheet.getRow(r);
+            for (int c = 0; c < cols; c++) {
+                XSSFCell cell = row.getCell(c);
+                DataFormatter df = new DataFormatter();
+                String value = df.formatCellValue(cell);
+                data[r-1][c] = value;
+            }
+        }
+
+        workbook.close();
+        inputStream.close();
+        return data;
+    }
+}
+
+
+
+
+
+
+
+
+
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+
+public class ExcelData {
+
+    @DataProvider(name = "credentialsData")
+    public Object[][] provideCredentialsData() throws IOException {
+        String path = ".\\excelldatafiles\\Book1.xlsx";
+
+        FileInputStream inputstream = new FileInputStream(path);
+        XSSFWorkbook workbook = new XSSFWorkbook(inputstream);
+        XSSFSheet sheet = workbook.getSheet("Sheet1");
+
+        int rows = sheet.getLastRowNum();
+        int cols = sheet.getRow(1).getLastCellNum();
+
+        Object[][] data = new Object[rows][cols];
+        for (int r = 1; r <= rows; r++) {
+            XSSFRow row = sheet.getRow(r);
+            for (int c = 0; c < cols; c++) {
+                XSSFCell col = row.getCell(c);
+                DataFormatter df = new DataFormatter();
+                String value = df.formatCellValue(col);
+                data[r - 1][c] = value;
+            }
+        }
+
+        workbook.close();
+        inputstream.close();
+        return data;
+    }
+
+    @Test(dataProvider = "credentialsData")
+    public void processCredentials(String username, String password) {
+        System.out.println("Username: " + username);
+        System.out.println("Password: " + password);
+        // Code to use the username and password for authentication
+        // ...
+    }
+
+}
